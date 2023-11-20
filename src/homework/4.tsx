@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  useMemo,
-  useState,
-  useContext,
-  ReactNode,
-} from "react";
+import React, { createContext, useMemo, useState, useContext, ReactNode } from "react";
 import noop from "lodash/noop";
 
 type MenuIds = "first" | "second" | "last";
@@ -20,9 +14,10 @@ type MenuSelected = {
   selectedMenu: SelectedMenu;
 };
 
-// Описати тип MenuAction
-type MenuAction = {
-  onSelectedMenu: (menu: SelectedMenu) => void;
+
+// Описати тип PropsProvider
+type PropsProvider = {
+  children: ReactNode;
 };
 
 const MenuSelectedContext = createContext<MenuSelected>({
@@ -33,15 +28,40 @@ const MenuActionContext = createContext<MenuAction>({
   onSelectedMenu: noop,
 });
 
+function MenuProvider({ children }: PropsProvider) {
+  const [selectedMenu, setSelectedMenu] = useState<SelectedMenu>({
+    id: "first",
+  });
+
+  const menuContextAction = useMemo(
+    () => ({
+      onSelectedMenu: setSelectedMenu,
+    }),
+    []
+  );
+
+
+
+// // Описати тип MenuAction
+// type MenuAction = {
+//   onSelectedMenu: (menu: SelectedMenu) => void;
+// };
+
+// const MenuSelectedContext = createContext<MenuSelected>({
+//   selectedMenu: { id: "first" },
+// });
+
+// const MenuActionContext = createContext<MenuAction>({
+//   onSelectedMenu: noop,
+// });
+
 // Описати тип PropsProvider
 type PropsProvider = {
   children: ReactNode;
 };
 
 function MenuProvider({ children }: PropsProvider) {
-  const [selectedMenu, setSelectedMenu] = useState<SelectedMenu>({
-    id: "first",
-  });
+  const [selectedMenu, setSelectedMenu] = useState<SelectedMenu>({ id: "first" });
 
   const menuContextAction = useMemo(
     () => ({
@@ -79,8 +99,7 @@ function MenuComponent({ menus }: PropsMenu) {
     <>
       {menus.map((menu) => (
         <div key={menu.id} onClick={() => onSelectedMenu({ id: menu.id })}>
-          {menu.title}{" "}
-          {selectedMenu.id === menu.id ? "Selected" : "Not selected"}
+          {menu.title} {selectedMenu.id === menu.id ? "Selected" : "Not selected"}
         </div>
       ))}
     </>
